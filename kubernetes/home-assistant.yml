@@ -19,6 +19,23 @@ spec:
         image: homeassistant/home-assistant
         ports:
         - containerPort: 8123
+        volumeMounts:
+        - name: config
+          mountPath: "/config"
+    initContainers:
+    - name: install
+      image: busybox
+      command:
+      - git clone git://github.com/k2r79/home-automation.git
+      - git checkout develop
+      - mv config/home-assistant /config
+      volumeMounts:
+      - name: config
+        mountPath: "/config"
+    dnsPolicy: Default
+    volumes:
+    - name: config
+      emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
