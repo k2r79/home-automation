@@ -32,7 +32,6 @@ spec:
       volumeMounts:
       - name: config
         mountPath: "/config"
-    dnsPolicy: Default
     volumes:
     - name: config
       emptyDir: {}
