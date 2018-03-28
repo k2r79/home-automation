@@ -17,24 +17,19 @@ spec:
       containers:
       - name: home-assistant
         image: homeassistant/home-assistant
+        command: []
         ports:
         - containerPort: 8123
         volumeMounts:
         - name: config
           mountPath: "/config"
-    initContainers:
-    - name: install
-      image: busybox
-      command:
-      - git clone git://github.com/k2r79/home-automation.git
-      - git checkout develop
-      - mv config/home-assistant /config
-      volumeMounts:
+        lifecycle:
+          postStart:
+            exec:
+              command: [ '/bin/bash', '-c', 'apt-get update && apt-get -y install git && git clone https://github.com/k2r79/home-automation.git && cd home-automation && git checkout develop && mv config/home-assistant/* /config && python -m homeassistant --config /config' ]
+      volumes:
       - name: config
-        mountPath: "/config"
-    volumes:
-    - name: config
-      emptyDir: {}
+        emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
