@@ -30,7 +30,9 @@ spec:
   selector:
     app: mqtt
   ports:
-  - port: 1883
+  - name: listener-ssl
+    port: 1883
     targetPort: 1883
-  - port: 9001
+  - name: listener
+    port: 9001
     targetPort: 9001

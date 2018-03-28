@@ -27,6 +27,10 @@ frontend:
 # Enables configuration UI
 config:
 
+# References the mqtt-service from mqtt.yml
+mqtt:
+  broker: mqtt-service
+
 http:
   # Secrets are defined in the file secrets.yaml
   # api_password: onepoint
