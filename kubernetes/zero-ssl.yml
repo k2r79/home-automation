@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zero-ssl
+  labels:
+    app: zero-ssl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zero-ssl
+  template:
+    metadata:
+      labels:
+        app: zero-ssl
+    spec:
+      containers:
+      - name: zero-ssl
+        image: zerossl/client
+        args: [ '--key', 'account.key', '--email', '"my@email.address"', '--csr', 'domain.csr', '--csr-key', 'domain.key', '--crt', 'domain.crt', '--generate-missing', '--domains', '"www.domain.ext,domain.ext"' ]
+        volumeMounts:
+          - mountPath: /data
+            name: certificate-volume
+      volumes:
+      - name: certificate-volume
+        hostPath:
+          path: "C:\\Users\\v.kelleher\\Workspace\\Temp\\Certificates"
