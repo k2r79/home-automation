@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: letsencrypt
+  labels:
+    app: letsencrypt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: letsencrypt
+  template:
+    metadata:
+      labels:
+        app: letsencrypt
+    spec:
+      containers:
+      - name: letsencrypt
+        image: linuxserver/letsencrypt
+        volumeMounts:
+          - mountPath: /config
+            name: certificate-volume
+        env:
+          - name: EMAIL
+            value: {{CERTIFICATE_EMAIL}}
+          - name: URL
+            value: {{CERTIFICATE_DOMAIN}}
+          - name: VALIDATION
+            value: http
+          - name: TZ
+            value: {{CERTIFICATE_TIMEZONE}}
+      volumes:
+      - name: certificate-volume
+        hostPath:
+          path: {{CERTIFICATE_VOLUME_PATH}}
