@@ -32,10 +32,10 @@ mqtt:
   broker: mqtt-service
 
 http:
-  # Secrets are defined in the file secrets.yaml
-  # api_password: onepoint
-  # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
-  # base_url: example.duckdns.org:8123
+  api_password: password
+  ssl_certificate: /certificates/fullchain.pem
+  ssl_key: /certificates/privkey.pem
+  base_url: example.duckdns.org:8123
 
 # Checks for available updates
 # Note: This component will send some information about your system to

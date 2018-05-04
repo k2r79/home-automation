@@ -23,13 +23,15 @@ spec:
         volumeMounts:
         - name: config
           mountPath: "/config"
-        lifecycle:
-          postStart:
-            exec:
-              command: [ '/bin/bash', '-c', 'apt-get update && apt-get -y install git && git clone https://github.com/k2r79/home-automation.git && cd home-automation && git checkout develop && mv config/home-assistant/* /config && curl -k -X POST -H "x-ha-access: password" -H "Content-Type: application/json" http://localhost:8123/api/services/homeassistant/restart' ]
+        - name: certificate-volume
+          mountPath: "/certificates"
       volumes:
       - name: config
-        emptyDir: {}
+        hostPath:
+          path: {{HOME_ASSISTANT_VOLUME_PATH}}
+      - name: certificate-volume
+        hostPath:
+          path: {{CERTIFICATE_VOLUME_PATH}}
 ---
 apiVersion: v1
 kind: Service
@@ -40,7 +42,7 @@ spec:
   selector:
     app: home-assistant
   ports:
-  - port: 80
+  - port: 443
     targetPort: 8123
 ---
 apiVersion: extensions/v1beta1
@@ -52,11 +54,11 @@ metadata:
 spec:
   backend:
     serviceName: default-http-backend
-    servicePort: 80
+    servicePort: 443
   rules:
   - http:
       paths:
       - path: /
         backend:
           serviceName: home-assistant-service
-          servicePort: 80
+          servicePort: 443
