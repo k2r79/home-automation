@@ -25,6 +25,9 @@ spec:
           mountPath: "/config"
         - name: certificate-volume
           mountPath: "/certificates"
+      initContainers:
+      - name: wait-for-letsencrypt
+        image: groundnuty/k8s-wait-for:latest
       volumes:
       - name: config
         hostPath:
