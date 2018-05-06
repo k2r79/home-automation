@@ -26,8 +26,9 @@ spec:
         - name: certificate-volume
           mountPath: "/certificates"
       initContainers:
-      - name: wait-for-letsencrypt
+      - name: wait-for-mqtt
         image: groundnuty/k8s-wait-for:latest
+        args: [ 'service', 'mqtt-service' ]
       volumes:
       - name: config
         hostPath:
@@ -45,7 +46,7 @@ spec:
   selector:
     app: home-assistant
   ports:
-  - port: 443
+  - port: 80
     targetPort: 8123
 ---
 apiVersion: extensions/v1beta1
@@ -57,11 +58,11 @@ metadata:
 spec:
   backend:
     serviceName: default-http-backend
-    servicePort: 443
+    servicePort: 80
   rules:
   - http:
       paths:
       - path: /
         backend:
           serviceName: home-assistant-service
-          servicePort: 443
+          servicePort: 80
