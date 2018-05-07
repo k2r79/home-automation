@@ -23,19 +23,14 @@ spec:
         volumeMounts:
         - name: config
           mountPath: "/config"
-        - name: certificate-volume
-          mountPath: "/certificates"
       initContainers:
       - name: wait-for-mqtt
         image: groundnuty/k8s-wait-for:latest
-        args: [ 'service', 'mqtt-service' ]
+        args: [ 'pod', '-lapp=mqtt' ]
       volumes:
       - name: config
         hostPath:
-          path: {{HOME_ASSISTANT_VOLUME_PATH}}
-      - name: certificate-volume
-        hostPath:
-          path: {{CERTIFICATE_VOLUME_PATH}}
+          path: /var/opt/home-assistant
 ---
 apiVersion: v1
 kind: Service
@@ -48,21 +43,3 @@ spec:
   ports:
   - port: 80
     targetPort: 8123
----
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-  name: home-assistant-ingress
-spec:
-  backend:
-    serviceName: default-http-backend
-    servicePort: 80
-  rules:
-  - http:
-      paths:
-      - path: /
-        backend:
-          serviceName: home-assistant-service
-          servicePort: 80

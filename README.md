@@ -29,6 +29,13 @@ Then edit the Kubernetes template configuration file to suit your own setup.
 vi kubernetes/config/template.properties
 ```
 
+The Nginx and Home Assistant configuration files must be mounted on the Minikube virtual machine to then mount them on the pods as the virtual machine is the host.
+
+```bash
+minikube mount /host/path/nginx:/var/opt/nginx
+minikube mount /host/path/home-assistant:/var/opt/home-assistant
+```
+
 Once that's done, you can compile the templates to fill the placeholders.
 
 ```bash
@@ -40,6 +47,8 @@ Your Kubernetes configuration files are now ready in the _kubernetes/_ folder. Y
 
 ```bash
 cd ..
+
+minikube start --kubernetes-version v1.10.0
 
 kubectl create -f letsencrypt.yml
 kubectl create -f home-assistant.yml

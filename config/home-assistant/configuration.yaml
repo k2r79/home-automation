@@ -33,9 +33,6 @@ mqtt:
 
 http:
   api_password: password
-  ssl_certificate: /certificates/fullchain.pem
-  ssl_key: /certificates/privkey.pem
-  base_url: example.duckdns.org:8123
 
 # Checks for available updates
 # Note: This component will send some information about your system to
