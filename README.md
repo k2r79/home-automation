@@ -15,13 +15,24 @@ What you'll need to successfuly install and run this project is :
 * Python 3.x
 * A registered domain name which points to your server running Minikube
 
+## Services
+
+The Minikube instance will host multiple home automation services :
+
+* a Home Assistant instance to manage your system
+* an Nginx instance to act as an entrypoint to your ecosystem, it will route traffic to the other services
+* a Certbot / LetsEncrypt service that creates and renews SSL certificates when needed
+* a Mosquitto MQTT bus to ensure the communication between services
+
 ## Installation
 
-Start by clonin the project
+Start by cloning the project
 
 ```bash
 git clone https://github.com/k2r79/home-automation.git
 ```
+
+### Editing the templates
 
 Then edit the Kubernetes template configuration file to suit your own setup.
 
@@ -29,12 +40,17 @@ Then edit the Kubernetes template configuration file to suit your own setup.
 vi kubernetes/config/template.properties
 ```
 
-The Nginx and Home Assistant configuration files must be mounted on the Minikube virtual machine to then mount them on the pods as the virtual machine is the host.
+You must also copy and tune the _config/_ folder templates.
 
 ```bash
-minikube mount /host/path/nginx:/var/opt/nginx
-minikube mount /host/path/home-assistant:/var/opt/home-assistant
+vi config/home-assistant/configuration.yaml
+cp config/home-assistant/configuration.yaml /host/path/home-assistant
+
+vi config/nginx/nginx.conf
+cp config/nginx/nginx.conf /host/path/nginx
 ```
+
+### Compiling the templates
 
 Once that's done, you can compile the templates to fill the placeholders.
 
@@ -47,9 +63,25 @@ Your Kubernetes configuration files are now ready in the _kubernetes/_ folder. Y
 
 ```bash
 cd ..
+```
 
+### Mounting the directories
+
+The Nginx and Home Assistant configuration files must be mounted on the Minikube virtual machine to then mount them on the pods as the virtual machine is the host.
+
+```bash
+nohup minikube mount /host/path/nginx:/var/opt/nginx &
+nohup minikube mount /host/path/home-assistant:/var/opt/home-assistant &
+```
+
+### Startup and setup Minikube
+
+You can now start your Minikube instance and install the services on it.
+
+```bash
 minikube start --kubernetes-version v1.10.0
 
+kubectl create -f nginx.yml
 kubectl create -f letsencrypt.yml
 kubectl create -f home-assistant.yml
 kubectl create -f mqtt.yml

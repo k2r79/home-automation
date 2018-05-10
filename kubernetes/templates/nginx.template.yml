@@ -27,13 +27,27 @@ spec:
         - name: https
           containerPort: 443
         volumeMounts:
-          - name: config
-            mountPath: "/etc/nginx/nginx.conf"
+        - name: config
+          mountPath: "/etc/nginx/nginx.conf"
+        - name: webroot
+          mountPath: "/var/www/html"
+        - name: certificates
+          mountPath: "/etc/letsencrypt"
+      initContainers:
+      - name: wait-for-letsencrypt
+        image: groundnuty/k8s-wait-for:latest
+        args: [ 'pod', '-lapp=letsencrypt' ]
       volumes:
       - name: config
         hostPath:
           path: /var/opt/nginx/nginx.conf
           type: File
+      - name: webroot
+        hostPath:
+          path: /var/www/html
+      - name: certificates
+        hostPath:
+          path: /var/opt/letsencrypt
 # ---
 # apiVersion: batch/v1
 # kind: Job
@@ -81,25 +95,3 @@ spec:
   - name: https
     port: 443
     targetPort: 443
-# ---
-# apiVersion: extensions/v1beta1
-# kind: Ingress
-# metadata:
-#   name: nginx
-# spec:
-#   tls:
-#   - hosts:
-#     - {{DOMAIN_NAME}}
-#     secretName: nginx-secret
-#   rules:
-#   - host: {{DOMAIN_NAME}}
-#     http:
-#       paths:
-#       - path: /
-#         backend:
-#           serviceName: home-assistant-service
-#           servicePort: 80
-#       - path: /.well-known
-#         backend:
-#           serviceName: letsencrypt-service
-#           servicePort: 80
