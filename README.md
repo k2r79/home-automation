@@ -22,3 +22,21 @@ Start by cloning the project
 ```bash
 git clone https://github.com/k2r79/home-automation.git
 ```
+
+### Tweak the configuration files
+
+Before launching the main playbook, start by tweak de configuration files in the `ansible/config/` folder.
+
+### Setup your Ansible hosts
+
+Edit the `/etc/ansible/hosts`file to add your Home Assistant server as so :
+
+```
+[home-assistant]
+192.168.99.100 ansible_user=root domain_name=<your_domain_name> letsencrypt_email=<your_letsencrypt_email>
+```
+
+### Launch the Ansible playbook
+
+By running the following command `ansible-playbook ansible/playbooks/main.yml` from the project's root directory.
+
