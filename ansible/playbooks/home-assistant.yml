@@ -1,0 +1,29 @@
+---
+- hosts: home-assistant
+  become_user: homeassistant
+  become: yes
+  become_method: su
+  gather_facts: yes
+
+  tasks:
+    - name: Create the configuration directory
+      file:
+        path: /home/homeassistant/.home-assistant
+        owner: homeassistant
+        state: directory
+
+    - name: Setup the Home Assistant configuration
+      copy:
+        src: ../config/home-assistant/configuration.yaml
+        dest: /home/homeassistant/.home-assistant/configuration.yaml
+        owner: homeassistant
+        group: homeassistant
+        mode: 0644
+
+    - name: Create the virtual environment and setup Home Assistant
+      shell: |
+        python3 -m venv /home/homeassistant/home-assistant
+        cd /home/homeassistant/home-assistant
+        . bin/activate
+        python3 -m pip install wheel
+        python3 -m pip install homeassistant

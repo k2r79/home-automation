@@ -1,0 +1,55 @@
+---
+- hosts: home-assistant
+  become: true
+  gather_facts: yes
+
+  tasks:
+    - name: Add Debian Stretch backport
+      apt_repository:
+        repo: deb http://ftp.debian.org/debian stretch-backports main
+        state: present
+      when: ansible_distribution_release == 'stretch'
+    
+    - name: Add Debian Jessie backport
+      apt_repository:
+        repo: deb http://ftp.debian.org/debian jessie-backports main
+        state: present
+      when: ansible_distribution_release == 'jessie'
+
+    - name: Upgrade system
+      apt: upgrade=dist update_cache=yes
+
+    - name: Install Certbot
+      apt: 
+        name: certbot
+        state: latest
+        default_release: stretch-backports
+      when: ansible_distribution_release == 'stretch'
+
+    - name: Install Certbot
+      apt: 
+        name: certbot
+        state: latest
+        default_release: squeeze-backports
+      when: ansible_distribution_release == 'jessie'
+
+    - name: Install Python 3 virtual environment
+      apt: 
+        name: python3-venv
+        state: latest
+
+    - name: Install PIP
+      shell: |
+        wget https://bootstrap.pypa.io/get-pip.py
+        python3 get-pip.py
+
+    # - name: Create certificate
+    #   shell: certbot certonly --standalone -d {{ domain_name }} -m {{ letsencrypt_email }} --agree-tos
+    #   args:
+    #     creates: /etc/letsencrypt/live/{{ domain_name }}
+
+    - name: Create renewal cron
+      cron:
+        name: "Certificate renewal"
+        special_time: monthly
+        job: certbot renew --pre-hook "systemctl stop home-assistant" --post-hook "systemctl start home-assistant"

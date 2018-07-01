@@ -1,0 +1,9 @@
+---
+- hosts: home-assistant
+
+  tasks:
+    - name: Create the Home Assistant user
+      user:
+        name: homeassistant
+        comment: Home Assistant
+        shell: /bin/bash

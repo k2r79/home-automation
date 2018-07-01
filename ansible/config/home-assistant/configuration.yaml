@@ -32,6 +32,8 @@ mqtt:
   broker: mqtt-service
 
 http:
+  server_host: 0.0.0.0
+  server_port: 8123
   api_password: password
 
 # Checks for available updates

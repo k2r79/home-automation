@@ -1,3 +1,1 @@
-config/home-assistant/configuration.yaml
-nohup.out
-kubernetes/*.yml
+*.retry

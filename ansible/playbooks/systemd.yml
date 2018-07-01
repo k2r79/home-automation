@@ -1,0 +1,27 @@
+---
+- hosts: home-assistant
+  gather_facts: yes
+
+  tasks:
+    - name: Setup systemd for Home Assistant
+      copy:
+        dest: "/etc/systemd/system/home-assistant.service"
+        content: |
+          [Unit]
+          Description=Home Assistant
+          After=network-online.target
+
+          [Service]
+          Type=simple
+          User=homeassistant
+          ExecStart=/home/homeassistant/home-assistant/bin/hass -c "/home/homeassistant/.home-assistant"
+
+          [Install]
+          WantedBy=multi-user.target
+      
+    - name: Start Home Assistant
+      systemd:
+        name: home-assistant
+        state: started
+        enabled: yes
+        masked: no
