@@ -43,10 +43,18 @@
         wget https://bootstrap.pypa.io/get-pip.py
         python3 get-pip.py
 
-    # - name: Create certificate
-    #   shell: certbot certonly --standalone -d {{ domain_name }} -m {{ letsencrypt_email }} --agree-tos
-    #   args:
-    #     creates: /etc/letsencrypt/live/{{ domain_name }}
+    - name: Create certificate
+      shell: certbot certonly --standalone -d {{ domain_name }} -m {{ letsencrypt_email }} --agree-tos
+      args:
+        creates: /etc/letsencrypt/live/{{ domain_name }}
+
+    - name: Setting up certificate rights
+      file: 
+        path: /etc/letsencrypt/
+        state: directory
+        recurse: true
+        owner: homeassistant
+        mode: 0744
 
     - name: Create renewal cron
       cron:

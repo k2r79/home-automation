@@ -13,8 +13,8 @@
         state: directory
 
     - name: Setup the Home Assistant configuration
-      copy:
-        src: ../config/home-assistant/configuration.yaml
+      template:
+        src: ../config/home-assistant/configuration.yaml.j2
         dest: /home/homeassistant/.home-assistant/configuration.yaml
         owner: homeassistant
         group: homeassistant
