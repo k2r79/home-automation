@@ -25,7 +25,8 @@ git clone https://github.com/k2r79/home-automation.git
 
 ### Tweak the configuration files
 
-Before launching the main playbook, start by tweak de configuration files in the `ansible/config/` folder.
+Before launching the main playbook, start by tweaking the configuration files in the `ansible/config/` folder.  
+Sample files are given to guide you, they must be copied without the `.sample` extension to be used as a configuration baseline.
 
 ### Setup your Ansible hosts
 
