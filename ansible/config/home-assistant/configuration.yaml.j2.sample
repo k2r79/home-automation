@@ -10,13 +10,6 @@ homeassistant:
   unit_system: metric
   # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
   time_zone: Europe/Paris
-  # Customization file
-  customize:
-    sensor.ph_meter:
-      icon: mdi:flask-empty-outline
-
-    switch.ph_pump:
-      icon: mdi:water-pump
 
 # Show links to resources in log and frontend
 # introduction:
@@ -32,8 +25,10 @@ http:
   server_port: 8123
   ssl_certificate: /etc/letsencrypt/live/{{ domain_name }}/fullchain.pem
   ssl_key: /etc/letsencrypt/live/{{ domain_name }}/privkey.pem
-  api_password: password
+  api_password: {{ home_assistant_password }}
   base_url: {{ domain_name }}
+
+mqtt:
 
 # Checks for available updates
 # Note: This component will send some information about your system to
@@ -62,62 +57,8 @@ map:
 # Track the sun
 sun:
 
-# Weather prediction
-sensor:
-  - platform: yr
-  - platform: random
-    name: "PH Meter"
-    maximum: 14
-    unit_of_measurement: PH
-  - platform: random
-    name: "Thermometer"
-    maximum: 40
-    unit_of_measurement: °C
-
-switch:
-  - platform: command_line
-    switches:
-      ph_pump:
-        command_on: echo "on" > /tmp/ph_pump.log
-        command_off: echo "off" > /tmp/ph_pump.log
-
-group:
-  default_view:
-    view: yes
-    entities:
-      - group.sensors
-      - group.pumps
-
-  sensors:
-    name: Sensors
-    entities:
-      - sensor.ph_meter
-      - sensor.thermometer
-
-  pumps:
-    name: Pumps
-    entities:
-      - switch.ph_pump
-
-
 # Text to speech
 tts:
   - platform: google
-
-# Cloud
-cloud:
-
-automation:
-  - alias: 'Stabilize the PH'
-    trigger:
-      - platform: numeric_state
-        entity_id: sensor.ph_meter
-        below: 7
-    action:
-      - service: switch.turn_on
-        entity_id: switch.ph_pump
-
-
-
 
 #script: !include scripts.yaml

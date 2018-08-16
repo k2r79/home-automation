@@ -4,7 +4,7 @@
 
 Here is my future home automation setup I'm working on. Everything is managed by a [Home Assistant](https://www.home-assistant.io/). I'm planning on using [Sonoff Basic](http://sonoff.itead.cc/en/products/sonoff/sonoff-basic) switches flashed with a custom firmware I'll soon make available on Github.
 
-This project will be hosted on a Raspberry Pi 3 made available through NAT/PAT rules and a dynamic DNS on my router.
+This project will be hosted on a Raspberry Pi made available through NAT/PAT rules and a dynamic DNS on my router.
 
 ## Prerequisites
 
@@ -33,8 +33,16 @@ Edit the `/etc/ansible/hosts`file to add your Home Assistant server as so :
 
 ```
 [home-assistant]
-192.168.99.100 ansible_user=root domain_name=<your_domain_name> letsencrypt_email=<your_letsencrypt_email>
+<server_ip> ansible_user=root home_assistant_password=<frontend_password> domain_name=<your_domain_name> letsencrypt_email=<your_letsencrypt_email>
 ```
+
+### Setup a dynamic DNS and NAT/PAT rules
+
+Before launching the Ansible playbooks you must setup a dynamic DNS and some NAT/PAT rules on your router.
+
+You'll need to map the following ports to your server :
+- 8123 -> 443 for HTTPS
+- 1883 -> 1883 for the MQTT Broker
 
 ### Launch the Ansible playbook
 

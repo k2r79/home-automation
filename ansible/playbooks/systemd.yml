@@ -1,6 +1,7 @@
 ---
 - hosts: home-assistant
   gather_facts: yes
+  become: yes
 
   tasks:
     - name: Setup systemd for Home Assistant
@@ -22,6 +23,6 @@
     - name: Start Home Assistant
       systemd:
         name: home-assistant
-        state: started
+        state: restarted
         enabled: yes
         masked: no
