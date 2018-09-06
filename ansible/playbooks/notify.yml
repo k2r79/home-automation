@@ -9,4 +9,4 @@
         token: "{{ telegram_api_key }}"
         chat_id: "{{ telegram_chat_id }}"
         msg: "Home Assistant updated"
-      when: telegram_api_key is defined
+      when: telegram_api_key is defined and telegram_chat_id is defined
