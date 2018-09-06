@@ -1,0 +1,12 @@
+---
+- hosts: home-assistant
+  gather_facts: false
+
+  tasks:
+
+    - name: "Sending notification"
+      telegram:
+        token: "{{ telegram_api_key }}"
+        chat_id: "{{ telegram_chat_id }}"
+        msg: "Home Assistant updated"
+      when: telegram_api_key is defined

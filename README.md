@@ -34,8 +34,10 @@ Edit the `/etc/ansible/hosts`file to add your Home Assistant server as so :
 
 ```
 [home-assistant]
-<server_ip> ansible_user=root home_assistant_password=<frontend_password> domain_name=<your_domain_name> letsencrypt_email=<your_letsencrypt_email>
+<server_ip> ansible_user=root home_assistant_password=<frontend_password> domain_name=<your_domain_name> letsencrypt_email=<your_letsencrypt_email> [telegram_api_key=<telegram_api_key>]
 ```
+
+For the two last Telegram parameters see [this tutorial](https://www.home-assistant.io/components/notify.telegram/).
 
 ### Setup a dynamic DNS and NAT/PAT rules
 
