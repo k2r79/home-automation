@@ -49,13 +49,18 @@
         name: python3-venv
         state: latest
 
+    - name: Install FFMPEG
+      apt: 
+        name: ffmpeg
+        state: latest
+
     - name: Install PIP
       shell: |
         wget https://bootstrap.pypa.io/get-pip.py
         python3 get-pip.py
 
     - name: Create certificate
-      shell: certbot certonly --standalone -d {{ domain_name }} -m {{ letsencrypt_email }} --agree-tos
+      shell: certbot certonly --standalone --preferred-challenges http -d {{ domain_name }} -m {{ letsencrypt_email }} --agree-tos
       args:
         creates: /etc/letsencrypt/live/{{ domain_name }}
 
@@ -71,4 +76,4 @@
       cron:
         name: "Certificate renewal"
         special_time: daily
-        job: certbot renew --pre-hook "systemctl stop home-assistant" --post-hook "systemctl start home-assistant"
+        job: certbot renew --preferred-challenges http --pre-hook "systemctl stop home-assistant" --post-hook "systemctl start home-assistant"
